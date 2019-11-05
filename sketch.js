@@ -23,7 +23,30 @@ var s = function(sketch) {
     canvas = p5canvas.canvas;
     graphics = sketch.createGraphics(w, h);
 
-    for (let i = 0; i < 100; i += 1) {
+    makeShapes(100);
+
+    sketch.frameRate(framerate);
+    graphics.background(bgColor);
+  }
+
+  sketch.draw = function() {
+    graphics.background(bgColor);
+    for (let shape of shapes) {
+      shape.draw(graphics);
+    }
+    sketch.shader(shader);
+    shader.setUniform('tex0', graphics);
+    shader.setUniform('resolution', [w, h]);
+    shader.setUniform('offsetAmount', 10);
+    sketch.rect(0,0,w,h);
+  }
+
+  sketch.mousePressed = function() {
+    makeShapes(100);
+  }
+
+  makeShapes = function(numShapes) {
+    for (let i = 0; i < numShapes; i += 1) {
       let shape;
       let x = w/2;
       let y = h/2;
@@ -59,21 +82,6 @@ var s = function(sketch) {
       }
       shapes.push(shape);
     }
-
-    sketch.frameRate(framerate);
-    graphics.background(bgColor);
-  }
-
-  sketch.draw = function() {
-    graphics.background(bgColor);
-    for (let shape of shapes) {
-      shape.draw(graphics);
-    }
-    sketch.shader(shader);
-    shader.setUniform('tex0', graphics);
-    shader.setUniform('resolution', [w, h]);
-    shader.setUniform('offsetAmount', 10);
-    sketch.rect(0,0,w,h);
   }
   // #endregion
 };
